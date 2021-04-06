@@ -22,6 +22,6 @@ stop-cluster:
 
 destroy-cluster:
 	@cd ${TOP_DIR} && \
-	docker-compose down --rmi local -v --remove-orphans
+	docker-compose down --rmi local -v --remove-orphans && \
 	docker-compose rm --force --stop -v
 
