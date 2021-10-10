@@ -1,51 +1,57 @@
 version: "3.8"
 services:
   roach1:
-    image: cockroachdb/cockroach:v20.2.7
+    build:
+      context: ./cockroach
     hostname: roach1
     ports:
       - "26257:26257"
       - "8080:8080"
-    command: [ "start", "--insecure", "--join=roach1,roach2,roach3" ]
+    command: [ "start", "--join=roach1,roach2,roach3", "--advertise-addr=roach1", "--store=/cockroach/data", "--certs-dir=/cockroach/certs" ]
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
     volumes:
-      - roach1-data:/cockroach/cockroach-data/
+      - roach1-data:/cockroach/data/:Z
+      - roach-certs:/cockroach/certs/:z
     networks:
       roachnet:
   roach2:
-    image: cockroachdb/cockroach:v20.2.7
+    build:
+      context: ./cockroach
     hostname: roach2
     #ports:
     #  - "26257:26257"
     #  - "8080:8080"
-    command: [ "start", "--insecure", "--join=roach1,roach2,roach3" ]
+    command: [ "start", "--join=roach1,roach2,roach3", "--advertise-addr=roach2", "--store=/cockroach/data", "--certs-dir=/cockroach/certs" ]
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
     volumes:
-      - roach2-data:/cockroach/cockroach-data/
+      - roach2-data:/cockroach/data/:Z
+      - roach-certs:/cockroach/certs/:z
     networks:
       roachnet:
   roach3:
-    image: cockroachdb/cockroach:v20.2.7
+    build:
+      context: ./cockroach
     hostname: roach3
     #ports:
     #  - "26257:26257"
     #  - "8080:8080"
-    command: [ "start", "--insecure", "--join=roach1,roach2,roach3" ]
+    command: [ "start", "--join=roach1,roach2,roach3", "--advertise-addr=roach3", "--store=/cockroach/data", "--certs-dir=/cockroach/certs" ]
     ulimits:
       nproc: 65535
       nofile:
         soft: 20000
         hard: 40000
     volumes:
-      - roach3-data:/cockroach/cockroach-data/
+      - roach3-data:/cockroach/data/:Z
+      - roach-certs:/cockroach/certs/:z
     networks:
       roachnet:
 
@@ -53,6 +59,7 @@ volumes:
   roach1-data:
   roach2-data:
   roach3-data:
+  roach-certs:
 
 networks:
   roachnet:
